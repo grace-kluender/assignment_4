@@ -1,14 +1,13 @@
 services:
   db:
-    image: mysql
-    container_name: mysql
+    image: mysql:8.0
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
       MYSQL_DATABASE: todo_app
     volumes: # persistent storage
       - mysql:/var/lib/mysql # Where MySQL stores its data
-      - ./database:/docker-entrypoint-initdb.d
+      - ./db:/docker-entrypoint-initdb.d
     networks:
       - backend
     healthcheck:
@@ -22,7 +21,6 @@ services:
     build: 
       context: ./app
       dockerfile: Dockerfile
-    container_name: flask_app
     restart: always
     ports:
       - "5000:5000"
@@ -39,13 +37,6 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: rootpass
       MYSQL_DATABASE: todo_app
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000"]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-      start_interval: 5s
 
   
 networks:

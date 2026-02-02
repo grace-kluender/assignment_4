@@ -1,0 +1,39 @@
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.104:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [01/Feb/2026 20:32:03] "GET /api/todos HTTP/1.1" 200 -
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.0.3:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Feb/2026 02:37:22] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:192.168.65.1 - - [02/Feb/2026 02:37:50] "GET /api/todos HTTP/1.1" 200 -
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.0.3:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Feb/2026 02:43:12] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Feb/2026 02:44:42] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.0.3:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:192.168.65.1 - - [02/Feb/2026 02:49:56] "GET /api/todos HTTP/1.1" 200 -
+ERROR:werkzeug:192.168.65.1 - - [02/Feb/2026 02:50:58] code 400, message Bad request version ('Ò\x92VB')
+ERROR:werkzeug:192.168.65.1 - - [02/Feb/2026 02:50:58] code 400, message Bad request version ('Âi0âx.Èß¹\x9e½Ý')
+INFO:werkzeug:192.168.65.1 - - [02/Feb/2026 02:50:58] "[31m[1m\x16\x03\x01\x06ò\x01\x00\x06î\x03\x03\x1cö\x07\x87,º;qÊåuB»n~è\x89\x0dø­3\x91\x9eõiØÆQÉQLZ \x00qª7\x85Ò\x92VB[0m" 400 -
+INFO:werkzeug:192.168.65.1 - - [02/Feb/2026 02:50:58] "[31m[1m\x16\x03\x01\x06Ò\x01\x00\x06Î\x03\x03;Gùz\x0d`\x87Û\x03{\x98ë\x89Äî\x97èä\x00L0s\x03\x8aGy9÷\x9bu\x04\x00 h\x83\x95ÒªÕ.º\x1a\x83O§ÃÍ¶«{\x08\x99OÂ¼\x81\x12.ìTï#z·j\x00 êê\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06eúú\x00\x00\x00\x1b\x00\x03\x02\x00\x02DÍ\x00\x05\x00\x03\x02h2\x00\x10\x00\x0e\x00\x0c\x02h2\x08http/1.1\x00#\x00\x00\x00+\x00\x07\x06jj\x03\x04\x03\x03þ\x0d\x00Ú\x00\x00\x01\x00\x01\x9c\x00 MÂ:\x05à§ÑÃ ¤î\x98\x1c©-åeçÿ)äÃ²¹ør.»\x19ÕPh\x00°,Äk\x08\x0dÂi0âx.Èß¹\x9e½Ý[0m" 400 -
+ERROR:werkzeug:192.168.65.1 - - [02/Feb/2026 02:50:58] code 400, message Bad request version ('localhost\x00+\x00\x07\x06êê\x03\x04\x03\x03\x00#\x00\x00ÿ\x01\x00\x01\x00DÍ\x00\x05\x00\x03\x02h2\x00')
+ERROR:werkzeug:192.168.65.1 - - [02/Feb/2026 02:50:58] code 400, message Bad request version ('ÁÛ\x9aâ\x81+"Þ´ùø1báð\x00')
+INFO:werkzeug:192.168.65.1 - - [02/Feb/2026 02:50:58] "[31m[1m\x16\x03\x01\x06ò\x01\x00\x06î\x03\x03`Á xÚÉÕ¥@\x01\x88bî£\x14-òzË¥=_KVÕLj\x93¬Û\x83o Kærôi>ag{q\x92]>k\x83º\x90ÔÁ\x99ôÀE@?\x84aÅh'¢§\x00 ÚÚ\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06\x85ÚÚ\x00\x00\x00\x12\x00\x00\x00\x0b\x00\x02\x01\x00\x00\x05\x00\x05\x01\x00\x00\x00\x00\x00\x1b\x00\x03\x02\x00\x02\x00\x00\x00\x0e\x00\x0c\x00\x00\x09localhost\x00+\x00\x07\x06êê\x03\x04\x03\x03\x00#\x00\x00ÿ\x01\x00\x01\x00DÍ\x00\x05\x00\x03\x02h2\x00[0m" 400 -
+INFO:werkzeug:192.168.65.1 - - [02/Feb/2026 02:50:58] "[31m[1m\x16\x03\x01\x06Ò\x01\x00\x06Î\x03\x03\x98\x91e³Ä\x9bÒ\x06\x196äg¾\x16\x1e\x10­§X\x087.§\x9a\x90ÀÌeÂ¿·Â 7³tá/ÕÒ\x83¹óhñe9«q\x85ÁÛ\x9aâ\x81+"Þ´ùø1báð\x00 [0m" 400 -
+INFO:werkzeug:192.168.65.1 - - [02/Feb/2026 02:51:14] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:192.168.65.1 - - [02/Feb/2026 02:51:14] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:192.168.65.1 - - [02/Feb/2026 02:51:19] "GET /delete_item HTTP/1.1" 200 -
+INFO:werkzeug:192.168.65.1 - - [02/Feb/2026 02:51:29] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:192.168.65.1 - - [02/Feb/2026 02:51:48] "GET /api/todos HTTP/1.1" 200 -
