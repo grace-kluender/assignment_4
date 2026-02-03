@@ -10,7 +10,7 @@ pipeline {
                 echo "Branch: ${BRANCH_NAME}"
             }
         }
-
+ 
         stage('End-to-End Test') {
             agent { label 'test'}
             steps {
@@ -22,7 +22,7 @@ pipeline {
             agent { label 'deploy' }
             steps {
                 checkout scm
-                
+
                 script {
                     def shortCommit = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
                     // Versioning with: Jenkins' auto-incremented build ID + Git SHA 
