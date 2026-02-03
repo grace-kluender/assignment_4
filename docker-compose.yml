@@ -18,6 +18,7 @@ services:
       start_period: 30s # Wait10s before first check (allow MySQl to start)
 
   app:
+    image: flask-app
     build: 
       context: ./app
       dockerfile: Dockerfile

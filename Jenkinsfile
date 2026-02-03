@@ -18,10 +18,28 @@ pipeline {
             }
         }
 
-        stage('Build (placeholder)') {
+        stage('Build (Docker)') {
             agent { label 'deploy' }
             steps {
-                sh 'echo "TODO: build artifact / docker image in Q4"'
+                checkout scm
+                
+                script {
+                    def shortCommit = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                    // Versioning with: Jenkins' auto-incremented build ID + Git SHA 
+                    env.VERSION = "1.0.${env.BUILD_NUMBER}-${shortCommit}"
+                    env.IMAGE_REPO = "flask-app"
+                    env.IMAGE_TAG  = "${env.IMAGE_REPO}:${env.VERSION}"
+                    echo "Building image: ${env.IMAGE_TAG}"
+                }
+
+                sh '''
+                mkdir -p dist
+                docker build -t ${IMAGE_TAG} -f ./app/Dockerfile ./app
+                echo ${IMAGE_TAG} > dist/image-tag.txt
+                echo ${VERSION} > dist/version.txt
+                git rev-parse HEAD > dist/git-commit.txt
+                '''
+                archiveArtifacts artifacts: 'dist/*', fingerprint: true
             }
         }
 
@@ -31,12 +49,6 @@ pipeline {
             steps {
                 sh 'echo "This stage only runs on main Q3 requirement"'
             }
-        }
-    }
-    post {
-        always {
-            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
-            junit 'build/reports/**/*.xml'
         }
     }
 }
