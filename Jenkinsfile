@@ -18,6 +18,24 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            agent { label 'deploy' }
+            steps {
+                checkout scm
+                
+                withSonarQubeEnv('sonarqube') {
+                sh '''
+                    docker run --rm \
+                    -e SONAR_HOST_URL="$SONAR_HOST_URL" \
+                    -e SONAR_TOKEN="$SONAR_AUTH_TOKEN" \
+                    -v "$PWD:/usr/src" \
+                    sonarsource/sonar-scanner-cli
+                '''
+                }
+            }
+        }
+
+
         stage('Build (Docker)') {
             agent { label 'deploy' }
             steps {
