@@ -32,12 +32,15 @@ pipeline {
                 sh 'echo "This stage only runs on main Q3 requirement"'
             }
         }
+    }
 
-        post {
-            always {
-                archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
-                junit 'build/reports/**/*.xml'
-            }
+    post {
+        always {
+            // Archive anything you generate later (safe even if empty patterns)
+            archiveArtifacts artifacts: 'reports/**/*, loadtest/results/**/*', allowEmptyArchive: true
+
+            // Publish JUnit XML later (safe if not created yet)
+            junit testResults: 'reports/**/*.xml', allowEmptyResults: true
         }
     }
 }
