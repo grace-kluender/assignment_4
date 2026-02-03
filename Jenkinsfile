@@ -32,11 +32,11 @@ pipeline {
                 sh 'echo "This stage only runs on main Q3 requirement"'
             }
         }
-        post {
-            always {
-                archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
-                junit 'build/reports/**/*.xml'
-            }
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
+            junit 'build/reports/**/*.xml'
         }
     }
 }
