@@ -33,14 +33,4 @@ pipeline {
             }
         }
     }
-
-    post {
-        always {
-            // Archive anything you generate later (safe even if empty patterns)
-            archiveArtifacts artifacts: 'reports/**/*, loadtest/results/**/*', allowEmptyArchive: true
-
-            // Publish JUnit XML later (safe if not created yet)
-            junit testResults: 'reports/**/*.xml', allowEmptyResults: true
-        }
-    }
 }
