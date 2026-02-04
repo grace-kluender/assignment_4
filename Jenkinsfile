@@ -72,11 +72,11 @@ pipeline {
             node('deploy') {
                 withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK_URL')]) {
                     sh '''
-    cat > slack.json <<EOF
-    {"text":"SUCCESS: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\n${BUILD_URL}"}
-    EOF
-    curl -X POST -H "Content-type: application/json" --data @slack.json "$SLACK_WEBHOOK_URL"
-    '''
+                        curl -sS -X POST \
+                            -H "Content-type: application/json" \
+                            --data "{\"text\":\"SUCCESS: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\n${BUILD_URL}\"}" \
+                            "$SLACK_WEBHOOK_URL"
+                    '''
                 }
             }
         }
@@ -85,11 +85,11 @@ pipeline {
             node('deploy') {
                 withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK_URL')]) {
                     sh '''
-    cat > slack.json <<EOF
-    {"text":"FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nConsole: ${BUILD_URL}console"}
-    EOF
-    curl -X POST -H "Content-type: application/json" --data @slack.json "$SLACK_WEBHOOK_URL"
-    '''     
+                    curl -sS -X POST \
+                        -H "Content-type: application/json" \
+                        --data "{\"text\":\"FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nConsole: ${BUILD_URL}console\"}" \
+                        "$SLACK_WEBHOOK_URL"
+                    '''
                 }
             }
         }
