@@ -1,5 +1,11 @@
 pipeline {
     agent none
+    
+    environment {
+        // Secret Text credential in Jenkins that stores your Slack Incoming Webhook URL
+        SLACK_WEBHOOK = credentials('slack-webhook')
+        SLACK_CHANNEL = '#all-devops'
+    }
 
     stages {
         stage('Checkout') {
@@ -65,5 +71,25 @@ pipeline {
                 sh 'echo "This stage only runs on main Q3 requirement"'
             }
         }
+    
+    post {
+        success {
+            // Send Slack message on success
+            sh """
+                curl -s -X POST -H 'Content-type: application/json' \
+                --data '{\"text\":\"SUCCESS: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nVersion: ${VERSION}\\n${BUILD_URL}\"}' \
+                \"$SLACK_WEBHOOK\"
+            """
+        }
+
+        failure {
+            // Send Slack message on failure with error details (console link)
+            sh """
+                curl -s -X POST -H 'Content-type: application/json' \
+                --data '{\"text\":\"FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nConsole: ${BUILD_URL}console\"}' \
+                \"$SLACK_WEBHOOK\"
+            """
+        }
     }
+}
 }
