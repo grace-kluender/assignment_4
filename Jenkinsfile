@@ -69,15 +69,26 @@ pipeline {
 
     post {
         success {
-            script {
-                slackSend(channel: '#all-devops', color: 'good',
-                    message: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (${env.BRANCH_NAME})\n${env.BUILD_URL}")
+            node('deploy') {
+                withCredentials([string(credentialsId: 'slack-webhook-2', variable: 'SLACK_WEBHOOK')]) {
+                    sh '''
+                    curl -X POST -H 'Content-type: application/json' \
+                        --data "{\"text\":\"✅ SUCCESS: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\n${BUILD_URL}\"}" \
+                        "$SLACK_WEBHOOK"
+                    '''
+                }
             }
         }
+
         failure {
-            script {
-                slackSend(channel: '#all-devops', color: 'danger',
-                    message: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER} (${env.BRANCH_NAME})\nCheck logs:\n${env.BUILD_URL}console")
+            node('deploy') {
+                withCredentials([string(credentialsId: 'slack-webhook-2', variable: 'SLACK_WEBHOOK')]) {
+                    sh '''
+                    curl -X POST -H 'Content-type: application/json' \
+                        --data "{\"text\":\"❌ FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nLogs: ${BUILD_URL}console\"}" \
+                        "$SLACK_WEBHOOK"
+                    '''
+                }
             }
         }
     }
