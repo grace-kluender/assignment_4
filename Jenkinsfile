@@ -23,7 +23,7 @@ pipeline {
             steps {
                 checkout scm
                 script {
-                    withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                    withCredentials([string(credentialsId: '70bbda20-e8b7-46be-95b7-955d0cbc407a', variable: 'SONAR_TOKEN')]) {
                         sh '''
                             docker run --rm \
                                 --platform linux/amd64 \
