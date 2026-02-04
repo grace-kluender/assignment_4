@@ -35,6 +35,14 @@ pipeline {
             }
         }
 
+        stage('Quality Gate') {
+            agent { label 'deploy' }
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
 
         stage('Build (Docker)') {
             agent { label 'deploy' }
