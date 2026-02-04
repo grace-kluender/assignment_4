@@ -68,28 +68,25 @@ pipeline {
     }
 
     post {
-        success {
+        always {
             node('deploy') {
-                withCredentials([string(credentialsId: 'slack-webhook-2', variable: 'SLACK_WEBHOOK')]) {
-                    sh '''
-                        curl -sS -X POST -H 'Content-type: application/json' \
-                            --data "{\"text\":\"SUCCESS: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\n${BUILD_URL}\"}" \
-                            "$SLACK_WEBHOOK"
-                        '''
-                }
+                // Stop & remove containers, networks, and named volumes
+                sh 'docker compose down -v || true'
             }
         }
 
-        failure {
-            node('deploy') {
-                withCredentials([string(credentialsId: 'slack-webhook-2', variable: 'SLACK_WEBHOOK')]) {
-                    sh '''
-                    curl -sS -X POST -H 'Content-type: application/json' \
-                        --data "{\"text\":\"FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nLogs: ${BUILD_URL}console\"}" \
-                        "$SLACK_WEBHOOK"
-                    '''
-                }
+        success {
+            echo "Pipeline succeeded! Sending notification"
+            mail to: 'graceekluender@gmail.com',
+                subject: "SUCCESS: Jenkins Build ${BUILD_VERSION}",
+                body: 'Build was successful!'
             }
+        failure {
+            echo " Pipeline failed! Sending notification"
+            mail to: 'graceekluender@gmail.com',
+                subject: "FAILURE: Jenkins Build ${BUILD_VERSION}",
+                body: "Build failed"
         }
     }
 }
+        
