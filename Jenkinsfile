@@ -71,7 +71,8 @@ pipeline {
                 sh 'echo "This stage only runs on main Q3 requirement"'
             }
         }
-    
+    }
+
     post {
         success {
             // Send Slack message on success
@@ -91,5 +92,4 @@ pipeline {
             """
         }
     }
-}
 }
