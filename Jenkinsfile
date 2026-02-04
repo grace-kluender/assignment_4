@@ -24,34 +24,30 @@ pipeline {
                 checkout scm
 
                 withSonarQubeEnv('sonarqube') {
-                    sh '''
-                        set -e
-                        echo "Running SonarScanner in Docker..."
+                sh '''
+                    set -e
 
-                        # Run scanner in a named container so we can copy report-task.txt out
-                        docker rm -f sonar-scanner || true
+                    docker rm -f sonar-scanner || true
 
-                        docker run --name sonar-scanner \
-                        -e SONAR_HOST_URL="$SONAR_HOST_URL" \
-                        -e SONAR_TOKEN="$SONAR_AUTH_TOKEN" \
-                        -v "$WORKSPACE:/usr/src" \
-                        sonarsource/sonar-scanner-cli
+                    docker run --name sonar-scanner --rm \
+                    -e SONAR_HOST_URL="$SONAR_HOST_URL" \
+                    -e SONAR_TOKEN="$SONAR_AUTH_TOKEN" \
+                    -e SONAR_USER_HOME=/usr/src/.sonar \
+                    -v "$WORKSPACE:/usr/src" \
+                    sonarsource/sonar-scanner-cli \
+                    -Dsonar.working.directory=.scannerwork
 
-                        echo "Copying report-task.txt into Jenkins workspace..."
-                        docker cp sonar-scanner:/usr/src/.scannerwork/report-task.txt "$WORKSPACE/report-task.txt" || true
-                        docker rm -f sonar-scanner || true
-
-                        echo "Report-task.txt copied? (listing)"
-                        ls -la "$WORKSPACE" | grep report-task || true
-                    '''
+                    echo "Looking for report-task.txt in workspace:"
+                    ls -la "$WORKSPACE/.scannerwork" || true
+                    test -f "$WORKSPACE/.scannerwork/report-task.txt"
+                '''
                 }
 
                 timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
+                waitForQualityGate abortPipeline: true
                 }
             }
-        }
-
+            }
 
         stage('Build (Docker)') {
             agent { label 'deploy' }
