@@ -1,11 +1,5 @@
 pipeline {
     agent none
-    
-    environment {
-        // Secret Text credential in Jenkins that stores your Slack Incoming Webhook URL
-        SLACK_WEBHOOK = credentials('slack-webhook')
-        SLACK_CHANNEL = '#all-devops'
-    }
 
     stages {
         stage('Checkout') {
@@ -76,26 +70,28 @@ pipeline {
     post {
         success {
             node('deploy') {
-                withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK')]) {
+                withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK_URL')]) {
                     sh '''
-                        curl -X POST -H "Content-type: application/json" \
-                        --data "{\"text\":\"✅ SUCCESS: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\n${BUILD_URL}\"}" \
-                        "$SLACK_WEBHOOK"
-                    '''
+    cat > slack.json <<EOF
+    {"text":"SUCCESS: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\n${BUILD_URL}"}
+    EOF
+    curl -X POST -H "Content-type: application/json" --data @slack.json "$SLACK_WEBHOOK_URL"
+    '''
                 }
             }
         }
 
         failure {
             node('deploy') {
-                withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK')]) {
+                withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK_URL')]) {
                     sh '''
-                        curl -X POST -H "Content-type: application/json" \
-                        --data "{\"text\":\"❌ FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nConsole: ${BUILD_URL}console\"}" \
-                        "$SLACK_WEBHOOK"
-                    '''
+    cat > slack.json <<EOF
+    {"text":"FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nConsole: ${BUILD_URL}console"}
+    EOF
+    curl -X POST -H "Content-type: application/json" --data @slack.json "$SLACK_WEBHOOK_URL"
+    '''     
                 }
-            }   
+            }
         }
     }
 }
