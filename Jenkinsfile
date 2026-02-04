@@ -86,15 +86,16 @@ pipeline {
             }
         }
 
-    failure {
-        node('deploy') {
-            withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK')]) {
-                sh '''
-                    curl -X POST -H "Content-type: application/json" \
-                    --data "{\"text\":\"❌ FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nConsole: ${BUILD_URL}console\"}" \
-                    "$SLACK_WEBHOOK"
-                '''
-            }
+        failure {
+            node('deploy') {
+                withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK')]) {
+                    sh '''
+                        curl -X POST -H "Content-type: application/json" \
+                        --data "{\"text\":\"❌ FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nConsole: ${BUILD_URL}console\"}" \
+                        "$SLACK_WEBHOOK"
+                    '''
+                }
+            }   
         }
     }
 }
