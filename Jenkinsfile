@@ -75,21 +75,26 @@ pipeline {
 
     post {
         success {
-            // Send Slack message on success
-            sh """
-                curl -s -X POST -H 'Content-type: application/json' \
-                --data '{\"text\":\"SUCCESS: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nVersion: ${VERSION}\\n${BUILD_URL}\"}' \
-                \"$SLACK_WEBHOOK\"
-            """
+            node('deploy') {
+                withEnv(["SLACK_WEBHOOK=${env.SLACK_WEBHOOK}"]) {
+                    sh '''
+                        curl -s -X POST -H 'Content-type: application/json' \
+                        --data "{\"text\":\"SUCCESS: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\n${BUILD_URL}\"}" \
+                        "$SLACK_WEBHOOK"
+                    '''
+                }
+            }
         }
 
         failure {
-            // Send Slack message on failure with error details (console link)
-            sh """
-                curl -s -X POST -H 'Content-type: application/json' \
-                --data '{\"text\":\"FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nConsole: ${BUILD_URL}console\"}' \
-                \"$SLACK_WEBHOOK\"
-            """
+            node('deploy') {
+                withEnv(["SLACK_WEBHOOK=${env.SLACK_WEBHOOK}"]) {
+                    sh '''
+                        curl -s -X POST -H 'Content-type: application/json' \
+                        --data "{\"text\":\"FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nConsole: ${BUILD_URL}console\"}" \
+                        "$SLACK_WEBHOOK"
+                    '''
+                }
+            }
         }
     }
-}
