@@ -91,8 +91,10 @@ pipeline {
             echo " Pipeline failed! Sending notification"
             mail to: 'graceekluender@gmail.com',
                 subject: "FAILURE: Jenkins Build ${env.VERSION}",
-                body: "Build failed"
+                body: """
+                Build failed. 
+                See console output for failure details: ${env.BUILD_URL}console
+                """
         }
     }
 }
-        
