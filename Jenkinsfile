@@ -22,30 +22,23 @@ pipeline {
             agent { label 'deploy' }
             steps {
                 checkout scm
-
-                withSonarQubeEnv('sonarqube') {
-                    sh '''
-                        set -e
-                        echo "Running SonarScanner in Docker..."
-                        docker run --rm \
-                            -e SONAR_HOST_URL=http://host.docker.internal:9000 \
-                            -e SONAR_TOKEN=$SONAR_AUTH_TOKEN \
-                            -e SONAR_USER_HOME=/usr/src/.sonar \
-                            -v "$WORKSPACE:/usr/src" \
-                            sonarsource/sonar-scanner-cli \
-                            -Dsonar.working.directory=.scannerwork
-
-                        # sanity check that report-task exists in the workspace
-                        ls -la .scannerwork || true
-                        test -f .scannerwork/report-task.txt
-                    '''
+                script {
+                    withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
+                        sh '''
+                            docker run --rm \
+                                --platform linux/amd64 \
+                                --network hw4_backend \
+                                -e SONAR_HOST_URL=http://sonarqube:9000 \
+                                -e SONAR_TOKEN=${SONAR_TOKEN} \
+                                -v "$(pwd)":/usr/src \
+                                sonarsource/sonar-scanner-cli \
+                                -Dsonar.qualitygate.wait=true \
+                                -Dsonar.qualitygate.timeout=300
+                        '''
                     }
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
                 }
             }
         }
-
 
         stage('Build (Docker)') {
             agent { label 'deploy' }
