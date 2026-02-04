@@ -27,7 +27,7 @@ pipeline {
                         sh '''
                             docker run --rm \
                                 --platform linux/amd64 \
-                                --network hw4_backend \
+                                --network backend \
                                 -e SONAR_HOST_URL=http://sonarqube:9000 \
                                 -e SONAR_TOKEN=${SONAR_TOKEN} \
                                 -v "$(pwd)":/usr/src \
