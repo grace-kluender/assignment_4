@@ -25,11 +25,24 @@ pipeline {
 
                 withSonarQubeEnv('sonarqube') {
                     sh '''
-                        docker run --rm \
+                        set -e
+                        echo "Running SonarScanner in Docker..."
+
+                        # Run scanner in a named container so we can copy report-task.txt out
+                        docker rm -f sonar-scanner || true
+
+                        docker run --name sonar-scanner \
                         -e SONAR_HOST_URL="$SONAR_HOST_URL" \
                         -e SONAR_TOKEN="$SONAR_AUTH_TOKEN" \
                         -v "$WORKSPACE:/usr/src" \
                         sonarsource/sonar-scanner-cli
+
+                        echo "Copying report-task.txt into Jenkins workspace..."
+                        docker cp sonar-scanner:/usr/src/.scannerwork/report-task.txt "$WORKSPACE/report-task.txt" || true
+                        docker rm -f sonar-scanner || true
+
+                        echo "Report-task.txt copied? (listing)"
+                        ls -la "$WORKSPACE" | grep report-task || true
                     '''
                 }
 
