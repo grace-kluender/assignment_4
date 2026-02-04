@@ -10,13 +10,6 @@ pipeline {
                 echo "Branch: ${BRANCH_NAME}"
             }
         }
- 
-        stage('End-to-End Test') {
-            agent { label 'test'}
-            steps {
-                sh 'echo "TODO: end to end test will run here in Q7"'
-            }
-        }
 
         stage('SonarQube + Quality Gate') {
             agent { label 'deploy' }

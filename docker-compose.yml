@@ -39,6 +39,18 @@ services:
       MYSQL_PASSWORD: rootpass
       MYSQL_DATABASE: todo_app
 
+  k6:
+    image: grafana/k6
+    depends_on:
+      - app
+    volumes:
+      - ./loadtest:/scripts
+      - ./artifacts/performance:/artifacts
+    environment:
+      - BASE_URL=http://app:5000
+    command: run /scripts/k6_todos.js
+    networks:
+      - backend
   
 networks:
   backend:
