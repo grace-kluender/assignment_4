@@ -69,28 +69,15 @@ pipeline {
 
     post {
         success {
-            node('deploy') {
-                withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK_URL')]) {
-                    sh """
-                        curl -sS -X POST \
-                            -H 'Content-type: application/json' \
-                            --data '{"text":"SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (${env.BRANCH_NAME})\\n${env.BUILD_URL}\"}' \
-                            '$SLACK_WEBHOOK_URL'
-                    """
-                }
+            script {
+                slackSend(channel: '#all-devops', color: 'good',
+                    message: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (${env.BRANCH_NAME})\n${env.BUILD_URL}")
             }
         }
-
         failure {
-            node('deploy') {
-                withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK_URL')]) {
-                    sh """
-                    curl -sS -X POST \
-                        -H 'Content-type: application/json' \
-                        --data '{"text":"FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER} (${env.BRANCH_NAME})\\nConsole: ${env.BUILD_URL}console\"}' \
-                        '$SLACK_WEBHOOK_URL'
-                    """
-                }
+            script {
+                slackSend(channel: '#all-devops', color: 'danger',
+                    message: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER} (${env.BRANCH_NAME})\nCheck logs:\n${env.BUILD_URL}console")
             }
         }
     }
