@@ -8,6 +8,12 @@ pipeline {
                 // Get code from whichever branch the trigger came from
                 checkout scm 
                 echo "Branch: ${BRANCH_NAME}"
+
+                script {
+                    def shortCommit = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                    env.VERSION = "1.0.${env.BUILD_NUMBER}-${shortCommit}"
+                    echo "Computed VERSION early: ${env.VERSION}"
+                }
             }
         }
 
@@ -78,13 +84,13 @@ pipeline {
         success {
             echo "Pipeline succeeded! Sending notification"
             mail to: 'graceekluender@gmail.com',
-                subject: "SUCCESS: Jenkins Build ${BUILD_VERSION}",
+                subject: "SUCCESS: Jenkins Build ${env.VERSION}",
                 body: 'Build was successful!'
             }
         failure {
             echo " Pipeline failed! Sending notification"
             mail to: 'graceekluender@gmail.com',
-                subject: "FAILURE: Jenkins Build ${BUILD_VERSION}",
+                subject: "FAILURE: Jenkins Build ${env.VERSION}",
                 body: "Build failed"
         }
     }
