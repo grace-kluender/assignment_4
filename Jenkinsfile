@@ -76,25 +76,24 @@ pipeline {
     post {
         success {
             node('deploy') {
-                withEnv(["SLACK_WEBHOOK=${env.SLACK_WEBHOOK}"]) {
+                withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK')]) {
                     sh '''
-                        curl -s -X POST -H 'Content-type: application/json' \
-                        --data "{\"text\":\"SUCCESS: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\n${BUILD_URL}\"}" \
+                        curl -X POST -H "Content-type: application/json" \
+                        --data "{\"text\":\"✅ SUCCESS: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\n${BUILD_URL}\"}" \
                         "$SLACK_WEBHOOK"
                     '''
                 }
             }
         }
 
-        failure {
-            node('deploy') {
-                withEnv(["SLACK_WEBHOOK=${env.SLACK_WEBHOOK}"]) {
-                    sh '''
-                        curl -s -X POST -H 'Content-type: application/json' \
-                        --data "{\"text\":\"FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nConsole: ${BUILD_URL}console\"}" \
-                        "$SLACK_WEBHOOK"
-                    '''
-                }
+    failure {
+        node('deploy') {
+            withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK')]) {
+                sh '''
+                    curl -X POST -H "Content-type: application/json" \
+                    --data "{\"text\":\"❌ FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nConsole: ${BUILD_URL}console\"}" \
+                    "$SLACK_WEBHOOK"
+                '''
             }
         }
     }
