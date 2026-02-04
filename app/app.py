@@ -33,7 +33,7 @@ def api_create_todo():
     # Return the created row 
     created = execute_query(
         query="SELECT id, title, date_created FROM todos WHERE title = %s ORDER BY id DESC LIMIT 1",
-        params=(title.stripl(),)
+        params=(title.strip(),)
     )
     return jsonify(created[0]), 201
 
