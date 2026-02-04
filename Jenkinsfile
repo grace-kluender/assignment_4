@@ -24,30 +24,28 @@ pipeline {
                 checkout scm
 
                 withSonarQubeEnv('sonarqube') {
-                sh '''
-                    set -e
+                    sh '''
+                        set -e
+                        echo "Running SonarScanner in Docker..."
+                        docker run --rm \
+                            -e SONAR_HOST_URL=http://host.docker.internal:9000 \
+                            -e SONAR_TOKEN=$SONAR_AUTH_TOKEN \
+                            -e SONAR_USER_HOME=/usr/src/.sonar \
+                            -v "$WORKSPACE:/usr/src" \
+                            sonarsource/sonar-scanner-cli \
+                            -Dsonar.working.directory=.scannerwork
 
-                    docker rm -f sonar-scanner || true
-
-                    docker run --name sonar-scanner --rm \
-                    -e SONAR_HOST_URL="$SONAR_HOST_URL" \
-                    -e SONAR_TOKEN="$SONAR_AUTH_TOKEN" \
-                    -e SONAR_USER_HOME=/usr/src/.sonar \
-                    -v "$WORKSPACE:/usr/src" \
-                    sonarsource/sonar-scanner-cli \
-                    -Dsonar.working.directory=.scannerwork
-
-                    echo "Looking for report-task.txt in workspace:"
-                    ls -la "$WORKSPACE/.scannerwork" || true
-                    test -f "$WORKSPACE/.scannerwork/report-task.txt"
-                '''
-                }
-
+                        # sanity check that report-task exists in the workspace
+                        ls -la .scannerwork || true
+                        test -f .scannerwork/report-task.txt
+                    '''
+                    }
                 timeout(time: 5, unit: 'MINUTES') {
-                waitForQualityGate abortPipeline: true
+                    waitForQualityGate abortPipeline: true
                 }
             }
-            }
+        }
+
 
         stage('Build (Docker)') {
             agent { label 'deploy' }
