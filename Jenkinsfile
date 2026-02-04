@@ -72,14 +72,10 @@ pipeline {
             node('deploy') {
                 withCredentials([string(credentialsId: 'slack-webhook-2', variable: 'SLACK_WEBHOOK')]) {
                     sh '''
-                        payload=$(cat <<'JSON'
-    {"text":"SUCCESS: '"$JOB_NAME"' #'"$BUILD_NUMBER"' ('"$BRANCH_NAME"')\n'"$BUILD_URL"'"}
-    JSON
-    )
                         curl -sS -X POST -H 'Content-type: application/json' \
-                            --data "$payload" \
+                            --data "{\"text\":\"SUCCESS: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\n${BUILD_URL}\"}" \
                             "$SLACK_WEBHOOK"
-                    '''
+                        '''
                 }
             }
         }
@@ -88,12 +84,8 @@ pipeline {
             node('deploy') {
                 withCredentials([string(credentialsId: 'slack-webhook-2', variable: 'SLACK_WEBHOOK')]) {
                     sh '''
-                        payload=$(cat <<'JSON'
-    {"text":"FAILURE: '"$JOB_NAME"' #'"$BUILD_NUMBER"' ('"$BRANCH_NAME"')\nLogs: '"$BUILD_URL"'console"}
-    JSON
-    )
                     curl -sS -X POST -H 'Content-type: application/json' \
-                        --data "$payload" \
+                        --data "{\"text\":\"FAILURE: ${JOB_NAME} #${BUILD_NUMBER} (${BRANCH_NAME})\\nLogs: ${BUILD_URL}console\"}" \
                         "$SLACK_WEBHOOK"
                     '''
                 }
