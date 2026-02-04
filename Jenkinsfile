@@ -71,12 +71,6 @@ pipeline {
                 sh 'echo "This stage only runs on main Q3 requirement"'
             }
         }
-
-        stage('Intentional Failure (Notification Test)') {
-            steps {
-                error("Intentional failure to verify email notifications")
-            }
-        }
     }
 
     post {
